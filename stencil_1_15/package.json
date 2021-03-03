@@ -1,0 +1,13 @@
+{
+  "name": "stencil-bazel",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/types/components.d.ts",
+  "collection": "./dist/collection/collection-manifest.json",
+  "author": "JP Wright <jp@gojust.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@stencil/core": "1.15.0"
+  }
+}

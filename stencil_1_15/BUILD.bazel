@@ -1,0 +1,61 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin", "copy_to_bin")
+load("//custom_stencil_rule:defs.bzl", "stencil_library")
+
+package(default_visibility = ["//visibility:public"])
+
+ALL_FILES = [
+    ":all_srcs_grp",
+    # ":package.json",
+    ":stencil.config.ts",
+    ":tsconfig.json",
+]
+
+filegroup(
+    name = "all_srcs_grp",
+    srcs = glob(
+        include = ["src/**/*"],
+        exclude = ["src/components.d.ts"],
+    ),
+)
+
+nodejs_binary(
+    name = "stencil",
+    data = [
+        "@stencil_1_15_deps//@stencil/core",
+    ],
+    entry_point = "@stencil_1_15_deps//:node_modules/@stencil/core/bin/stencil",
+    visibility = ["//visibility:public"],
+)
+
+stencil_library(
+    name = "stencil_1_15_bazel_lib",
+    srcs = [
+        ":all_srcs_grp",
+    ],
+    compiler = ":stencil",
+    node_modules = ":node_modules",
+    package_json = ":package.json",
+    stencilconfig = ":stencil.config.ts",
+    tsconfig = ":tsconfig.json",
+)
+
+# For the npm_package dist_rule
+copy_to_bin(
+    name = "all_srcs_copy",
+    srcs = ALL_FILES,
+)
+
+npm_package_bin(
+    name = "dist_rule",
+    package = "stencil",
+    tool = "stencil",
+    link_workspace_root = True,
+    chdir = "$(RULEDIR)",
+    # output_dir = True,
+    outs = [
+        "dist",
+    ],
+    data = ["all_srcs_copy"],
+    args = ["build --config=stencil.config.ts --verbose --debug"],
+)
+

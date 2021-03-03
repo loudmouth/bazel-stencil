@@ -1,0 +1,14 @@
+.metadata/
+build/
+.gradle/
+.recommenders/
+/bazel-*
+.vscode
+.idea/
+*.iml
+.ijwb
+.DS_Store
+node_modules
+user.bazelrc
+gl-code-quality-report.json
+yarn-error.log
